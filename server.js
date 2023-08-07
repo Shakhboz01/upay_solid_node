@@ -10,6 +10,11 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+
+app.get('/', (req, res) => {
+  res.send('server started')
+})
+
 app.post('/send-otp', (req, res) => {
   const body = {api_user: {
     phone_number: req.body.phone_number
