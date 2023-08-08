@@ -3,10 +3,13 @@ const bodyParser = require('body-parser');
 require('dotenv').config()
 const express = require('express')
 const request = require('request')
-const axios = require('axios')
 
 const app = express()
-app.use(cors());
+var corsOptions = {
+  origin: process.env.CORS_ORIGIN,
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -15,20 +18,24 @@ app.get('/', (req, res) => {
   res.send('server started')
 })
 
-app.post('/send-otp', (req, res) => {
-  const body = {api_user: {
-    phone_number: req.body.phone_number
-  }};
+app.post('/send-otp', async (req, res) => {
+  try {
+    const body = {api_user: { phone_number: req.body.phone_number }};
 
-  request({
-    url: `${process.env.REMOTE_SERVER_URL}/api/v4/user/send-otp`,
-    method: "POST",
-    json: true,
-    body: body
-  }, function (error, response, body){
-      res.json({success: response.body.success});
-  });
-})
+    const response = await request({
+      url: `${process.env.REMOTE_SERVER_URL}/api/v4/user/send-otp`,
+      method: "POST",
+      json: true,
+      body
+    });
+
+    res.json({ success: response.body.success });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 app.post('/verify-number', async(req, res) => {
   const { phone_number, otp } = req.body;
