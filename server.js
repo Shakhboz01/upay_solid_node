@@ -18,24 +18,24 @@ app.get('/', (req, res) => {
   res.send('server started')
 })
 
-app.post('/send-otp', async (req, res) => {
-  try {
-    const body = {api_user: { phone_number: req.body.phone_number }};
+app.post('/send-otp', (req, res) => {
+  const body = {api_user: {
+    phone_number: req.body.phone_number
+  }};
 
-    const response = await request({
+  try {
+    request({
       url: `${process.env.REMOTE_SERVER_URL}/api/v4/user/send-otp`,
       method: "POST",
       json: true,
       body
+    }, function (error, response, body){
+        res.json({success: response.body.success});
     });
-
-    res.json({ success: response.body.success });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.json({success: false, error})
   }
-});
-
+})
 
 app.post('/verify-number', async(req, res) => {
   const { phone_number, otp } = req.body;
