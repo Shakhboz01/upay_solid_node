@@ -2,24 +2,22 @@ const express = require('express');
 const router = express.Router();
 const request = require('request')
 
-router.get('/providers/:country', (req, res) => {
-  const { country } = req.headers;
+router.get('/countries', (req, res) => {
 
   const options = {
     'method': "GET",
-    'url': `${process.env.REMOTE_SERVER_URL}/api/v4/providers.json`,
+    'url': `${process.env.REMOTE_SERVER_URL}/api/countries.json`,
     'json': true,
     'headers': {
       'Content-Type': 'application/json',
       'Content-Language': req.headers['content-language']
-    },
-    'body': { country }
+    }
   }
 
   try {
     request(options, function (error, response, body){
-      const activeProviders = response.body.schema.categories.filter(category => category.active == true)
-      res.json({categories: activeProviders});
+      console.log('get providers')
+      res.json({countries: response.body});
     });
   } catch (error) {
     res.json({success: false, error: true, message: error})

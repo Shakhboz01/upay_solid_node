@@ -5,6 +5,7 @@ const express = require('express')
 const signInRoute = require('../routes/signIn');
 const signUpRoute = require('../routes/signUp');
 const providersRoute = require('../routes/providers');
+const countriesRoute = require('../routes/countries');
 
 module.exports = function(app){
   var corsOptions = {
@@ -19,4 +20,5 @@ module.exports = function(app){
   app.use("/", signUpRoute);
   app.use("/", signInRoute);
   app.use("/", providersRoute);
+  app.use("/", countriesRoute);
 }
